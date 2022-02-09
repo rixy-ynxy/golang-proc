@@ -1,4 +1,5 @@
 package main
+
 import (
 	"net/http"
 	"time"
@@ -10,7 +11,7 @@ import (
 
 const tmplPath = "src/template/"
 
-var e =createMux()
+var e = createMux()
 
 func main() {
 	e.GET("/", articleIndex)
@@ -25,6 +26,8 @@ func createMux() *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Gzip())
 
+	e.Static("/css", "src/css")
+
 	return e
 
 }
@@ -32,12 +35,12 @@ func createMux() *echo.Echo {
 func articleIndex(c echo.Context) error {
 	data := map[string]interface{}{
 		"Message": "Hello, World!",
-		"Now": time.Now(),
+		"Now":     time.Now(),
 	}
 	return render(c, "article/index.html", data)
 }
 
-func htmlBlob(file string, data map[string]interface{})([]byte, error){
+func htmlBlob(file string, data map[string]interface{}) ([]byte, error) {
 	return pongo2.Must(pongo2.FromCache(tmplPath + file)).ExecuteBytes(data)
 }
 
